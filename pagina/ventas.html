@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TecnoLab — Technology Store</title>
+  <meta name="description" content="Online store for phones, tablets, and computers — TecnoLab">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#94a3b8;
+      --accent:#7c3aed;
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02);
+      color-scheme: dark;
+    }
+    *{box-sizing:border-box}
+    
+    body{
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial; 
+      margin:0; 
+      background:radial-gradient(1200px 500px at 10% 10%, rgba(124,58,237,0.08), transparent), linear-gradient(180deg,#071028 0%, var(--bg) 100%); 
+      color:#e6eef8; 
+      -webkit-font-smoothing:antialiased;
+      padding-inline: 15px; 
+    }
+
+    main{max-width:1200px; margin:18px auto; padding:0;} 
+    
+    header{padding:28px 0; display:flex; align-items:center; justify-content:space-between; gap:20px; max-width: 1200px; margin: 0 auto;}
+    .brand{display:flex; align-items:center; gap:14px}
+    .logo{width:56px; height:56px; border-radius:12px; background:linear-gradient(135deg,var(--accent), #5eead4); display:flex; align-items:center; justify-content:center; font-weight:700; color:#061025; font-size:18px; box-shadow:0 6px 20px rgba(124,58,237,0.12)}
+    .brand h1{margin:0;font-size:20px;letter-spacing:0.2px}
+    .brand p{margin:0;font-size:12px;color:var(--muted)}
+
+    nav ul{list-style:none; padding:0; margin:0; display:flex; gap:14px; align-items:center}
+    nav a{color:var(--muted); text-decoration:none; font-weight:600; padding:8px 12px; border-radius:8px; transition: color 0.2s}
+    nav a:hover{color:#ffffff}
+    nav a.primary{background:linear-gradient(90deg,rgba(124,58,237,0.14), rgba(94,234,212,0.06)); color:var(--accent)}
+
+    .hero{display:grid; grid-template-columns:1fr 420px; gap:28px; align-items:center; margin-bottom:22px}
+    .hero-card{background:linear-gradient(180deg,var(--glass), var(--glass-2)); border-radius:16px; padding:28px; box-shadow:0 8px 30px rgba(2,6,23,0.6); backdrop-filter: blur(6px)}
+    .hero h2{margin:0; font-size:28px}
+    .hero p{color:var(--muted); margin-top:10px}
+    .filters{display:flex; gap:8px; margin-top:18px}
+    .btn{cursor:pointer; border:1px solid rgba(255,255,255,0.04); padding:10px 14px; border-radius:10px; background:transparent; color:var(--muted); font-weight:600}
+    .btn.active{background:linear-gradient(90deg,var(--accent),#5eead4); color:#041026; box-shadow:0 8px 20px rgba(124,58,237,0.12)}
+
+    .search{display:flex; gap:10px; margin-top:18px}
+    .search input{flex:1; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit}
+    .search button{padding:12px 14px; border-radius:12px; border:none; background:var(--accent); color:#041026; font-weight:700}
+
+    .products-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:22px}
+
+    .card-wrapper{perspective:1000px; height:320px;}
+    .card{position:relative; width:100%; height:100%; border-radius:14px; transition: transform 0.6s; transform-style:preserve-3d; cursor:pointer}
+    .card.flipped{transform:rotateY(180deg)}
+
+    .card-side{position:absolute; top:0; left:0; width:100%; height:100%; backface-visibility:hidden; border-radius:14px; padding:16px; border:1px solid rgba(255,255,255,0.03); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); display:flex; flex-direction:column; justify-content:center}
+    .card-front{justify-content:space-between}
+    .card-back{transform:rotateY(180deg); text-align:center; align-items:center; justify-content:space-around; }
+    .card-back p{color:var(--muted); font-size:14px; margin-top:10px; padding: 0 10px;}
+
+    /* 🖼️ ESTILOS PARA LAS IMÁGENES REALES */
+    .card-front .img{
+      height: 140px; 
+      margin-bottom: 10px; 
+      border-radius: 10px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      background-color: var(--card); 
+      overflow: hidden;
+    }
+    .card-front .img img {
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; /* Ajusta la imagen sin estirarla */
+      padding: 10px; 
+    }
+    /* -------------------------------------- */
+
+
+    .card-front h3{margin:12px 0 6px 0}
+    .price{font-weight:800; color:var(--accent)}
+    .meta{color:var(--muted); font-size:13px}
+    .actions{display:flex; gap:8px; margin-top:12px}
+    .buy{flex:1; padding:10px 12px; border-radius:10px; border:none; background:linear-gradient(90deg,var(--accent), #5eead4); color:#041026; font-weight:800; cursor:pointer}
+    .wish{padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background:transparent}
+    
+    .buy-back{
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg,var(--accent), #5eead4);
+      color: #041026;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 16px; 
+      width: 80%; 
+      max-width: 200px;
+    }
+
+    .sidebar{padding:20px; display:flex; flex-direction:column; gap:20px} 
+    
+    .contact-card{border-radius:12px; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent)}
+    .contact-card input, .contact-card textarea, .contact-card button{
+        width: 100%;
+        padding: 10px 14px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.04);
+        background: rgba(255,255,255,0.02);
+        color: inherit;
+        resize: none;
+    }
+    .contact-card button{
+        background: var(--accent);
+        color: #041026;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        margin-top: 5px;
+    }
+
+    .cart-card{border-radius:12px; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); flex-grow: 1;}
+    .cart-item{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.01)}
+    .cart-total{display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-weight:700; font-size:16px}
+    .checkout-btn{
+      width:100%; margin-top:14px; padding:10px; border-radius:10px; border:none; 
+      background:var(--accent); color:#041026; font-weight:800; cursor:pointer;
+    }
+    .remove-item{
+      color:var(--muted); background:transparent; border:none; padding:4px; margin-left:8px; cursor:pointer; font-size:16px; line-height:1;
+    }
+
+    .extra-section {
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.04);
+        max-width: 1200px; 
+        margin: 50px auto 0 auto; 
+        
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.6s ease-in-out, opacity 0.4s ease-in-out;
+    }
+    .extra-section.visible {
+        max-height: 1000px; 
+        opacity: 1;
+        padding-bottom: 20px;
+    }
+    
+    .extra-section h2 {
+        font-size: 32px;
+        color: var(--accent);
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .about-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    .about-card {
+        background: var(--card);
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.02);
+    }
+    .about-card h3 {
+        color: #ffffff;
+        margin-top: 0;
+    }
+    .about-card p {
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    footer{
+        max-width:1200px; 
+        margin:28px auto; 
+        padding:28px; 
+        border-radius:12px; 
+        background:linear-gradient(180deg, rgba(7,16,40,0.4), rgba(6,12,24,0.2)); 
+        display:flex; 
+        align-items:center; 
+        justify-content:space-between; 
+        gap:20px
+    }
+    .motivate{font-size:16px}
+    .copyright{color:var(--muted); font-size:13px}
+    
+    #notification-container {
+        position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000;
+    }
+    .toast {
+        background-color: var(--card); color: #e6eef8; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        opacity: 0; transform: translateY(20px); transition: opacity 0.3s ease, transform 0.3s ease; min-width: 250px; border-left: 4px solid var(--accent);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    #checkout-modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex;
+        justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    #checkout-modal.visible { opacity: 1; visibility: visible; }
+    .modal-content {
+        background: var(--card); padding: 40px; border-radius: 16px; text-align: center; max-width: 400px; width: 90%;
+        box-shadow: 0 10px 40px rgba(124, 58, 237, 0.2); transform: scale(0.9); transition: transform 0.3s ease;
+    }
+    #checkout-modal.visible .modal-content { transform: scale(1); }
+    .checkmark {
+        color: #5eead4; font-size: 80px; line-height: 1; margin-bottom: 20px; display: inline-block; border: 4px solid #5eead4;
+        border-radius: 50%; padding: 10px;
+    }
+    .modal-content h2 { color: var(--accent); margin-top: 0; font-size: 28px; }
+    .modal-content p { color: var(--muted); margin-bottom: 30px; }
+    .modal-content button { background: var(--accent); color: #041026; font-weight: 700; padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; }
+    
+    
+    @media (max-width:1000px){
+        .hero{grid-template-columns:1fr} 
+        .products-grid{grid-template-columns:repeat(2,1fr)} 
+        .sidebar{flex-direction:row} 
+        .about-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:640px){
+        .products-grid{grid-template-columns:1fr} 
+        header{padding:18px 0;} 
+        .logo{width:48px;height:48px} 
+        .hero{gap:14px} 
+        .sidebar{flex-direction:column}
+        footer {
+            flex-direction: column; 
+            text-align: center;
+            padding: 20px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">TL</div>
+      <div>
+        <h1>TecnoLab</h1>
+        <p>Technology powering your daily life</p>
+      </div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#productos" class="primary">Products</a></li>
+        <li><a href="#contacto" data-target="contacto">Contact Us</a></li>
+        <li><a href="#nosotros" data-target="nosotros">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <h2>Find your next device at TecnoLab</h2>
+        <p>Explore expert-selected phones, tablets, and computers. Quick filters, clear descriptions, and special offers.</p>
+
+        <div class="filters" role="tablist" aria-label="Filter by category">
+          <button class="btn active" data-filter="all">All</button>
+          <button class="btn" data-filter="phone">Phones</button>
+          <button class="btn" data-filter="tablet">Tablets</button>
+          <button class="btn" data-filter="laptop">Laptops</button>
+        </div>
+
+        <div class="search">
+          <input id="search" placeholder="Search product, brand, or model...">
+          <button id="searchBtn">Search</button>
+        </div>
+
+        <div style="margin-top:14px;color:var(--muted);font-size:13px">Free shipping on purchases over L.12,000 • 30-day warranty</div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="contact-card">
+          <h3>Need Help?</h3>
+          <p class="meta">Send us a message and we will reply within 24 hours.</p>
+          <form id="contactForm">
+            <input type="text" id="contactName" placeholder="Your Name" required>
+            <input type="email" id="contactEmail" placeholder="Your Email" required>
+            <textarea id="contactMessage" placeholder="Your message..." rows="3" required></textarea>
+            <button type="submit">Send Message</button>
+          </form>
+        </div>
+
+        <div class="cart-card" id="cart-sidebar">
+          <h3>🛒 Shopping Cart</h3>
+          <div id="cart-items" style="max-height:150px; overflow-y:auto; margin-bottom:10px">
+            </div>
+          <div id="cart-summary">
+            </div>
+          <button class="checkout-btn" id="checkoutBtn" disabled>Proceed to Checkout</button>
+        </div>
+      </aside>
+    </section>
+
+    <section id="productos">
+      <div class="products-grid" id="productsGrid"></div>
+    </section>
+    
+    <section id="nosotros" class="extra-section">
+        <h2>Our History</h2>
+        <p style="max-width:800px; margin:0 auto 30px; text-align:center; color:var(--muted)">
+            Founded in 2018, TecnoLab was born with the mission to democratize cutting-edge technology in Honduras. We don't just sell devices; we offer tools for our customers to build a more connected and productive future.
+        </p>
+
+        <div class="about-grid">
+            <div class="about-card">
+                <h3>Mission</h3>
+                <p>To provide access to quality technology, ensuring exceptional and transparent service in every interaction with our customers.</p>
+            </div>
+            <div class="about-card">
+                <h3>Vision</h3>
+                <p>To be the leading technology store in the region, recognized for our constant innovation and commitment to total customer satisfaction.</p>
+            </div>
+            <div class="about-card">
+                <h3>Values</h3>
+                <p>Integrity, Passion for Technology, Customer Focus, and Transparency in all our commercial processes.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section id="contacto" class="extra-section">
+        <h2>Contact and Location</h2>
+        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center; margin-top:20px;">
+            <div style="background:var(--card); padding:20px; border-radius:12px; flex:1; min-width:250px;">
+                <h3>Contact Information</h3>
+                <p class="meta">Email: <a href="mailto:soporte@tecnolab.example" style="color:var(--accent)">support@tecnolab.example</a></p>
+                <p class="meta">Phone: +504 2234-5678</p>
+                <p class="meta">Hours: Monday to Friday, 9:00 AM - 6:00 PM</p>
+            </div>
+            <div style="background:var(--card); padding:20px; border-radius:12px; flex:2; min-width:300px;">
+                <h3>Main Location (Simulated)</h3>
+                <p class="meta">Tecno Plaza Mall, Level 2, Local 210, Tegucigalpa, Honduras</p>
+                
+                <div style="height:150px; background-color:#1c2533; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#ffffff; font-size:14px; position: relative; overflow: hidden;">
+                    <span style="font-size: 24px; color: var(--accent); margin-bottom: 5px;">📍</span>
+                    <p style="margin: 0; color: var(--muted);">Click to see interactive location</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Centro+Comercial+Tecno+Plaza,+Tegucigalpa,+Honduras" target="_blank" style="background: var(--accent); color: #041026; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: 700; margin-top: 10px; font-size: 14px;">
+                        Open in Maps
+                    </a>
+                </div>
+                </div>
+        </div>
+    </section>
+
+
+  </main>
+
+  <footer>
+    <div>
+      <div class="motivate">"At TecnoLab, we believe in technology as a tool to create opportunities. Dare to take the next step!"</div>
+    </div>
+    <div class="copyright">© <span id="year"></span> TecnoLab · All rights reserved</div>
+  </footer>
+
+  <div id="notification-container"></div>
+  
+  <div id="checkout-modal">
+    <div class="modal-content">
+      <div class="checkmark">✔</div>
+      <h2>Purchase Successful!</h2>
+      <p id="modal-message">Your order has been processed for a total of **L.0.00**. You will receive confirmation and tracking via email. Thank you for choosing TecnoLab!</p>
+      <button onclick="hideCheckoutModal()">Acknowledge and Continue</button>
+    </div>
+  </div>
+
+  <script>
+    
+// --- DENTRO DE SU ETIQUETA <script> ---
+
+// --- COMIENZA EL BLOQUE <script> ---
+// ... (código JavaScript anterior) ...
+
+const products = [
+  // ----------------------------------------------------
+  // --- PHONES ---
+  // ----------------------------------------------------
+  {id:1,category:'phone',name:'Samsung Galaxy A55 5G',desc:'8GB RAM · 128GB · AMOLED 120Hz',price:13500,tag:'Recommended', info:'The perfect balance between performance, design, and battery life.', image: 'telefonos/Samsung Galaxy A55 5G.JPG'},
+  
+  {id:2,category:'phone',name:'Samsung Galaxy S24 Ultra',desc:'6.8" Dynamic AMOLED · 12GB RAM · 256GB',price:25999,tag:'Premium', info:'Maximum Android power with professional-grade cameras.', image: 'telefonos/Samsung Galaxy S24 Ultra.webp'},
+  
+  {id:3,category:'phone',name:'Google Pixel 8',desc:'50MP Camera · Google Tensor G3 · 4575mAh',price:9499,tag:'Offer', info:'The smartest Android with AI-powered features.', image: 'telefonos/pixel 8.JPG'},
+  
+  {id:4,category:'phone',name:'Samsung Galaxy Tab S9 FE (Phone Substitute)',desc:'6000mAh Battery · 33W Charging',price:5999,tag:'Budget', info:'A versatile option for daily use and long-lasting battery.', image: 'telefonos/Samsung Galaxy Tab S9 FE.AVIF'},
+  
+  {id:5,category:'phone',name:'Apple iPhone 15 Pro Max',desc:'6.7" Super Retina XDR · A17 Pro · 256GB',price:35999,tag:'New', info:'The most advanced iPhone with titanium design and pro cameras.', image: 'telefonos/iPhone 15 Pro Max.webp'},
+  
+  // ----------------------------------------------------
+  // --- TABLETS ---
+  // ----------------------------------------------------
+  {id:6,category:'tablet',name:'Apple iPad Air M2',desc:'11" · 8GB RAM · 128GB',price:12999,tag:'Offer', info:'Powerful and lightweight, perfect for study and productivity.', image: 'telefonos/iPad Air M2.webp'},
+  
+  {id:7,category:'tablet',name:'Samsung Galaxy Tab S9 FE',desc:'10.9" · 6GB RAM · 128GB',price:7499,tag:'Economic', info:'Great for entertainment, students, and multitasking.', image: 'telefonos/Samsung Galaxy Tab S9 FE.AVIF'}, 
+  
+  {id:8,category:'tablet',name:'Dell Latitude 7230 Rugged Tablet',desc:'12" FHD · Rugged Design · Intel i5',price:4499,tag:'Durable', info:'Built for extreme conditions and professional field work.', image: 'telefonos/Dell Latitude 7230 Rugged.JPG'},
+  
+  // ----------------------------------------------------
+  // --- LAPTOPS ---
+  // ----------------------------------------------------
+  {id:9,category:'laptop',name:'Apple MacBook Air M3',desc:'13" · 8GB RAM · 256GB SSD',price:21999,tag:'Recommended', info:'Ultra-thin and powerful with Apple Silicon M3.', image: 'telefonos/MacBook Air M3.JPG'},
+  
+  {id:10,category:'laptop',name:'Dell XPS 13 Plus',desc:'13.4" InfinityEdge · 16GB · 512GB SSD',price:25999,tag:'Offer', info:'Compact, premium, and powerful ultrabook.', image: 'telefonos/Dell XPS 13 Plus.JPG'},
+  
+  {id:11,category:'laptop',name:'Dell G16 Gaming Laptop',desc:'16" QHD+ · i7 · 32GB RAM · RTX 4070',price:49999,tag:'Gaming', info:'Built for gamers who demand maximum performance.', image: 'telefonos/Dell G16 Gaming.JPG'},
+  
+  {id:12,category:'laptop',name:'Dell Latitude 3520',desc:'15.6" FHD · Intel i5 · 8GB RAM · 256GB SSD',price:8999,tag:'Economic', info:'Reliable laptop for business and students.', image: 'telefonos/Dell Latitude 3520.AVIF'},
+];
+
+// ... el resto del código JavaScript (función renderList, etc.) ...
+
+    const productsGrid = document.getElementById('productsGrid');
+    const yearEl = document.getElementById('year');
+    yearEl.textContent = new Date().getFullYear();
+
+    // 🌟 CART LOGIC 🌟
+    let cart = []; 
+    const cartItemsEl = document.getElementById('cart-items');
+    const cartSummaryEl = document.getElementById('cart-summary');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const notificationContainer = document.getElementById('notification-container');
+    const checkoutModal = document.getElementById('checkout-modal');
+    const modalMessage = document.getElementById('modal-message');
+
+    // Currency formatter (using L. for Lempiras, as it's set in Honduras context)
+    function money(num){ return 'L.' + num.toLocaleString('en-US'); } // Using US locale for standard comma separators
+
+    // --- TOAST NOTIFICATION FUNCTION ---
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = message;
+      notificationContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 10); 
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        toast.addEventListener('transitionend', () => {
+          toast.remove();
+        }, { once: true });
+      }, 3000); 
+    }
+    // ----------------------------------------
+
+    // --- CHECKOUT MODAL FUNCTIONS ---
+    function showCheckoutModal(total) {
+        modalMessage.innerHTML = `Your order has been processed for a total of **${money(total)}**. You will receive confirmation and tracking via email. Thank you for choosing TecnoLab!`;
+        checkoutModal.classList.add('visible');
+    }
+
+    function hideCheckoutModal() {
+        checkoutModal.classList.remove('visible');
+    }
+    // ----------------------------------------
+
+
+    // Renders cart content in the sidebar
+    function renderCart() {
+      cartItemsEl.innerHTML = '';
+      let total = 0;
+
+      if(cart.length === 0){
+        cartItemsEl.innerHTML = '<div style="color:var(--muted); text-align:center; padding:10px 0;">The cart is empty.</div>';
+        cartSummaryEl.innerHTML = '';
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        total += item.price * item.quantity;
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cart-item';
+        itemEl.innerHTML = `
+          <div>
+            ${item.quantity}x ${item.name} 
+            <button class="remove-item" data-index="${index}">×</button>
+          </div>
+          <div class="price">${money(item.price * item.quantity)}</div>
+        `;
+        cartItemsEl.appendChild(itemEl);
+      });
+
+      // Show summary (Subtotal)
+      cartSummaryEl.innerHTML = `
+        <div class="cart-total">
+          <span>Subtotal:</span>
+          <span class="price">${money(total)}</span>
+        </div>
+      `;
+      checkoutBtn.disabled = false;
+    }
+
+    // Adds a product to the cart
+    function addToCart(productId) {
+      const prod = products.find(x => x.id === productId);
+      if (!prod) return;
+
+      const existingItem = cart.find(item => item.id === productId);
+
+      if (existingItem) {
+        existingItem.quantity++;
+      } else {
+        cart.push({
+          id: prod.id,
+          name: prod.name,
+          price: prod.price,
+          quantity: 1
+        });
+      }
+
+      renderCart();
+      showToast(`✅ **${prod.name}** added to cart.`);
+    }
+
+    // Removes a product from the cart
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+    
+    renderCart();
+
+    // Event Listener to remove items from cart
+    cartItemsEl.addEventListener('click', e => {
+      const btn = e.target.closest('.remove-item');
+      if(btn){
+        const index = Number(btn.dataset.index);
+        removeFromCart(index);
+      }
+    });
+
+    // Event Listener for checkout button - LAUNCHES MODAL!
+    checkoutBtn.addEventListener('click', () => {
+      const finalTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      showCheckoutModal(finalTotal);
+
+      cart = []; 
+      renderCart();
+    });
+    // 🌟 END CART LOGIC 🌟
+    
+    // --- CONTACT FORM LOGIC ---
+    const contactForm = document.getElementById('contactForm');
+    
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevents actual form submission
+
+        const name = document.getElementById('contactName').value;
+        const email = document.getElementById('contactEmail').value;
+        const message = document.getElementById('contactMessage').value;
+
+        // Simulated successful submission
+        showToast(`📬 Message sent! Thank you, **${name}**. We will contact you soon at ${email}.`);
+
+        // Reset the form
+        contactForm.reset();
+    });
+    // ----------------------------------------
+    
+    // --- LOGIC TO SHOW/HIDE SECTIONS ON CLICK ---
+    document.querySelectorAll('nav a[data-target]').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault(); 
+            
+            const targetId = link.getAttribute('data-target');
+            const targetSection = document.getElementById(targetId);
+
+            if (!targetSection) return;
+
+            // 1. Hide all "extra" sections
+            document.querySelectorAll('.extra-section').forEach(section => {
+                if (section.id !== targetId) {
+                    section.classList.remove('visible');
+                }
+            });
+
+            // 2. Toggle visibility of the target section
+            const isVisible = targetSection.classList.contains('visible');
+
+            // 3. If not visible, show it and scroll
+            if (!isVisible) {
+                targetSection.classList.add('visible');
+                // Smoothly scroll to the section position
+                setTimeout(() => { // Small delay for visibility transition to start
+                    targetSection.scrollIntoView({behavior:'smooth', block:'start'});
+                }, 100);
+            } else {
+                // If already visible, hide it and scroll back to products
+                 targetSection.classList.remove('visible');
+                 document.getElementById('productos').scrollIntoView({behavior:'smooth', block:'start'});
+
+            }
+        });
+    });
+
+    // Also maintain scroll for the "Products" link
+    document.querySelector('nav a[href="#productos"]').addEventListener('click', e => {
+      e.preventDefault(); 
+      document.getElementById('productos').scrollIntoView({behavior:'smooth', block:'start'});
+
+      // Hide other sections when returning to products
+      document.querySelectorAll('.extra-section').forEach(section => {
+        section.classList.remove('visible');
+      });
+    });
+
+    // -----------------------------------------------------------------
+
+
+    function renderList(list){
+      productsGrid.innerHTML = '';
+      if(list.length === 0){ productsGrid.innerHTML = '<div style="grid-column:1/-1;padding:40px;border-radius:12px;background:var(--card);text-align:center;color:var(--muted)">No products found</div>'; return }
+      list.forEach(p => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'card-wrapper';
+        
+        wrapper.innerHTML = `
+          <div class="card" data-id="${p.id}">
+            <div class="card-side card-front">
+              
+              <div class="img">
+                <img src="${p.image}" alt="${p.name}">
+                ${p.tag ? '<small style="position:absolute;margin-top:-110px;margin-left:12px;background:rgba(124,58,237,0.12);padding:6px 8px;border-radius:8px;font-weight:700;color:var(--accent)">'+p.tag+'</small>':''}
+              </div>
+              <h3>${p.name}</h3>
+              <div class="meta">${p.desc}</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+                <div class="price">${money(p.price)}</div>
+                <div class="meta">${p.category}</div>
+              </div>
+              <div class="actions">
+                <button class="buy" data-id="${p.id}">Buy</button>
+                <button class="wish">♡</button>
+              </div>
+            </div>
+            <div class="card-side card-back">
+              <h3>${p.name}</h3>
+              <p>${p.info}</p>
+              <button class="buy-back" data-id="${p.id}">Buy Now</button>
+            </div>
+          </div>
+        `;
+        productsGrid.appendChild(wrapper);
+      })
+    }
+
+    renderList(products);
+
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        document.querySelectorAll('.btn').forEach(x => x.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.getAttribute('data-filter');
+        if(f === 'all') renderList(products); else renderList(products.filter(p => p.category === f));
+      })
+    })
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const q = document.getElementById('search').value.trim().toLowerCase();
+      if(!q) return renderList(products);
+      const found = products.filter(p => (p.name+p.desc+p.info+p.category).toLowerCase().includes(q));
+      renderList(found);
+    })
+
+    document.getElementById('search').addEventListener('keydown', e => { if(e.key === 'Enter') document.getElementById('searchBtn').click() });
+
+    // Flip cards on click and buying functionality
+    productsGrid.addEventListener('click', e => {
+      const card = e.target.closest('.card');
+      const b = e.target.closest('button.buy') || e.target.closest('button.buy-back');
+      
+      if(b){
+        e.stopPropagation(); 
+        const id = Number(b.dataset.id);
+        addToCart(id); 
+      } else if(card){ 
+        card.classList.toggle('flipped'); 
+      }
+    });
+
+  </script>
+</body>
+</html>
